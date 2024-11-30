@@ -1,7 +1,6 @@
-version: '3.3'
 services:
   wildstar:
-    image: mysql:5.7
+    image: mariadb:11.6
     restart: always
     environment:
       # Password for root access
