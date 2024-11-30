@@ -1,0 +1,9 @@
+[submodule "WorldDatabase"]
+	path = WorldDatabase
+	url = https://github.com/JasonGoemaat/NexusForever.WorldDatabase.git
+[submodule "AdminUi"]
+	path = AdminUi
+	url = https://github.com/JasonGoemaat/nexusforever-adminui.git
+[submodule "NexusForever"]
+	path = NexusForever
+	url = https://github.com/JasonGoemaat/NexusForever.git
