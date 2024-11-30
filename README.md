@@ -32,6 +32,14 @@ linking to other repositories.
 * `/AdminUI`
     * (git submodule)
 
+The NexusForever and WorldData repositories are forks of the public repositories pinned
+to commits I know work, if you want to check out changes and branches made by others these
+are the original repositories:
+
+* [NexusForever](https://github.com/NexusForever/NexusForever)
+* [WorldDatabase](https://github.com/NexusForever/NexusForever.WorldDatabase)
+
+
 ## Prerequisites
 
 1. [Docker](https://www.docker.com/)
@@ -155,10 +163,17 @@ When first starting it has to actually download and install all the data, so be 
 I've heard that if you want to use a language other than English, you should first install English anyway
 to prevent some problems later.
 
-### AdminUI
+## AdminUI
 
-The AdminUI is very much a work in progress.   If you wish to use it to examine some of the
-game data using the 'Explorer':
+The AdminUI is very much a work in progress, a sort of front-end.   I may add
+more options for managing accounts and such. in the future.   Right now I
+find it useful for examining the tables using 'Explorer' at the top.  
+
+It connects to the api running in the WorldServer and only serves on localhost
+by default.   You can change 'WorldServer.json' to make it listen on 0.0.0.0
+instead of 127.0.0.1 to open it up to your network, but there there is
+currently no authentication setup for it so do that at your own risk.
+You need to change the address of the api in `AdminUi/src/lib/Api.ts` also.
 
 1. Make sure you have [NodeJS 22](https://nodejs.org/en/download/package-manager) installed
 2. Install [pnpm](https://pnpm.io/installation)
@@ -172,3 +187,39 @@ game data using the 'Explorer':
     pnpm dev --open
     ```
 6. That should open your browser to `http://localhost:5173` and display the home page.
+
+## A first change (you dirty cheater)
+
+Go to NexusForever.WorldServer project in Visual Studio and navigate to
+`Game/Combat` and open `DamageCalculator.cs`.   Go to line 45 where you see
+this:
+
+```cs
+if (damage < 0)
+    return;
+
+if (victim == null || !victim.IsAlive)
+    return;
+```
+
+Add these lines after, which will not add the damage if the victim is a
+player, and will multiply the damage by 20 if the attacker is a player and
+the victim is not:
+
+```cs
+if (victim is Player)
+    return;
+
+if (attacker is Player)
+    damage *= 20;
+```
+
+Now when you start the WorldServer the game will be easier :)   I like adding
+this when I'm just trying to explore and debug why quests aren't working
+quickly.
+
+You can edit the code while the server is running, but it seems like that only
+works if the code is stopped in the method you are editing.   To try that out,
+set a breakpoint on the previous statements and do something in-game to cause
+damage.   Visual Studio should break at the method then you can make a change
+and use CTRL+S to save and hit F5 to continue and the change will be used.
